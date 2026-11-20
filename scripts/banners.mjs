@@ -29,8 +29,8 @@ const C = {
 // ---------- content ----------
 const TITLE = 'kilo-latex-patch';
 const SUB = 'LaTeX cho chat Kilo Desktop';
-const RAW = '$$ \\sum_{k=1}^{n} k^2 = \\frac{n(n+1)(2n+1)}{6} $$';
-const TEX = '\\sum_{k=1}^{n} k^2 = \\frac{n(n+1)(2n+1)}{6}';
+const RAW = '$$\\sum_{k=1}^{n} k = \\frac{n(n+1)}{2}$$';
+const TEX = '\\sum_{k=1}^{n} k = \\frac{n(n+1)}{2}';
 const TAG_RAW = 'trước';
 const TAG_OK = 'sau khi vá';
 const BADGE = 'Kilo #70 fix';
@@ -66,7 +66,7 @@ const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, 
 // ---------- header ----------
 async function header() {
   const W = 960;
-  const H = 300;
+  const H = 340;
   const monoText = RAW + TAG_RAW + TAG_OK + BADGE;
   const css = [
     await fontFace('Manrope', MANROPE, TITLE, 800),
@@ -75,34 +75,43 @@ async function header() {
   ].join('');
 
   const math = texToSvg(TEX);
-  // Fit the rendered formula into the right half of the panel.
-  const mathH = 64;
+  const mathH = 74;
   const mathW = (math.vb[2] / math.vb[3]) * mathH;
 
-  // Panel geometry
-  const px = 40;
-  const py = 150;
-  const pw = W - 80;
-  const ph = 110;
-  const cx = px + pw / 2;
+  // Two cards side by side: raw LaTeX typed out (before) -> rendered (after).
+  const cy = 150;
+  const ch = 150;
+  const cw = 380;
+  const lx = 40;
+  const rx = W - 40 - cw;
+  const fs = 14;
+  const charW = fs * 0.6; // Source Code Pro advance width
+  const rawW = RAW.length * charW;
+  const rawX = lx + (cw - rawW) / 2;
+  const rawY = cy + ch / 2 + 22;
+  const T = 6; // loop length (s); typing 0-30%, result 38-46%, hold, reset 92%+
+  const steps = RAW.length;
+  const widths = Array.from({ length: steps + 1 }, (_, i) => (i * charW).toFixed(1)).join(';');
+  const times = Array.from({ length: steps + 1 }, (_, i) => ((0.3 * i) / steps).toFixed(4)).join(';');
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="kilo-latex-patch: LaTeX cho chat Kilo Desktop">
 <style>${css}
 .t{font-family:Manrope,sans-serif;font-weight:800;fill:${C.text};letter-spacing:-1.5px}
 .m{font-family:Mono,MonoVi,ui-monospace,monospace;font-weight:500}
-.raw{animation:raw 7s infinite}
-.ok{animation:ok 7s infinite}
-.tagRaw{animation:raw 7s infinite}
-.tagOk{animation:ok 7s infinite}
-.cur{animation:blink 1s steps(1) infinite}
 .px rect{animation:px 1.4s infinite}
 .px rect:nth-child(2){animation-delay:.15s}.px rect:nth-child(3){animation-delay:.3s}.px rect:nth-child(4){animation-delay:.45s}
-@keyframes raw{0%,38%{opacity:1;transform:translateY(0)}46%,92%{opacity:0;transform:translateY(-8px)}100%{opacity:1;transform:translateY(0)}}
-@keyframes ok{0%,40%{opacity:0;transform:translateY(8px)}50%,90%{opacity:1;transform:translateY(0)}98%,100%{opacity:0;transform:translateY(8px)}}
-@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
 @keyframes px{0%,100%{opacity:.25}40%{opacity:1}}
-@media (prefers-reduced-motion:reduce){.raw,.tagRaw{opacity:0;animation:none}.ok,.tagOk{opacity:1;animation:none}.cur,.px rect{animation:none}}
+.ok{animation:ok ${T}s infinite}
+@keyframes ok{0%,38%{opacity:0;transform:translateY(10px)}46%,90%{opacity:1;transform:translateY(0)}97%,100%{opacity:0;transform:translateY(0)}}
+.arrow{animation:arrow ${T}s infinite}
+@keyframes arrow{0%,30%{opacity:.3}38%,100%{opacity:1}}
+.okCard{animation:okCard ${T}s infinite}
+@keyframes okCard{0%,38%{stroke:${C.line}}46%,90%{stroke:${C.yellow}}97%,100%{stroke:${C.line}}}
+@media (prefers-reduced-motion:reduce){.px rect,.ok,.arrow,.okCard{animation:none}.ok{opacity:1}.okCard{stroke:${C.yellow}}}
 </style>
+<defs><clipPath id="type"><rect x="${rawX}" y="${rawY - 24}" height="34" width="${rawW}">
+<animate attributeName="width" dur="${T}s" repeatCount="indefinite" calcMode="discrete" values="${widths};${rawW.toFixed(1)}" keyTimes="${times};1"/>
+</rect></clipPath></defs>
 <rect width="${W}" height="${H}" rx="16" fill="${C.bg}"/>
 <g class="px" transform="translate(40 52)">
   <rect x="0" y="0" width="14" height="14" fill="${C.yellow}"/>
@@ -115,14 +124,19 @@ async function header() {
 <rect x="${W - 196}" y="52" width="156" height="32" rx="16" fill="${C.yellow}"/>
 <text x="${W - 118}" y="73" class="m" font-size="14" fill="${C.ink}" text-anchor="middle">${esc(BADGE)}</text>
 
-<rect x="${px}" y="${py}" width="${pw}" height="${ph}" rx="12" fill="${C.panel}" stroke="${C.line}"/>
-<g class="tagRaw" style="transform-box:fill-box;transform-origin:center"><text x="${px + 20}" y="${py + 26}" class="m" font-size="12" fill="${C.muted}">${esc(TAG_RAW)}</text></g>
-<g class="tagOk" style="transform-box:fill-box;transform-origin:center"><text x="${px + 20}" y="${py + 26}" class="m" font-size="12" fill="${C.yellow}">${esc(TAG_OK)}</text></g>
-<g class="raw">
-  <text x="${cx}" y="${py + 68}" class="m" font-size="19" fill="${C.text}" text-anchor="middle">${esc(RAW)}</text>
+<rect x="${lx}" y="${cy}" width="${cw}" height="${ch}" rx="12" fill="${C.panel}" stroke="${C.line}" stroke-width="1.5"/>
+<text x="${lx + 20}" y="${cy + 30}" class="m" font-size="13" fill="${C.muted}">${esc(TAG_RAW)}</text>
+<g clip-path="url(#type)"><text x="${rawX}" y="${rawY}" class="m" font-size="${fs}" fill="${C.text}">${esc(RAW)}</text></g>
+
+<g class="arrow" transform="translate(${W / 2 - 22} ${cy + ch / 2 - 11})">
+<rect x="0" y="8" width="30" height="6" fill="${C.yellow}"/>
+<path d="M26 0 L44 11 L26 22 Z" fill="${C.yellow}"/>
 </g>
+
+<rect class="okCard" x="${rx}" y="${cy}" width="${cw}" height="${ch}" rx="12" fill="${C.panel}" stroke="${C.line}" stroke-width="1.5"/>
+<text x="${rx + 20}" y="${cy + 30}" class="m" font-size="13" fill="${C.yellow}">${esc(TAG_OK)}</text>
 <g class="ok">
-  <svg x="${cx - mathW / 2}" y="${py + 24}" width="${mathW}" height="${mathH}" viewBox="${math.vb.join(' ')}" color="${C.text}" style="color:${C.text}">${math.inner}</svg>
+<svg x="${rx + (cw - mathW) / 2}" y="${cy + 50}" width="${mathW}" height="${mathH}" viewBox="${math.vb.join(' ')}" color="${C.text}" style="color:${C.text}">${math.inner}</svg>
 </g>
 </svg>
 `;
