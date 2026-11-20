@@ -15,21 +15,26 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node scripts/test-render.mjs",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "banners": "node scripts/banners.mjs"
   },
   "engines": {
     "node": ">=18"
   },
   "license": "MIT",
   "devDependencies": {
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource-variable/source-code-pro": "^5.3.1",
     "esbuild": "^0.25.0",
     "katex": "^0.16.22",
+    "mathjax-full": "^3.2.1",
     "rehype-katex": "^7.0.1",
     "rehype-stringify": "^10.0.1",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
+    "subset-font": "^2.9.0",
     "unified": "^11.0.5"
   },
   "keywords": [

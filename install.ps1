@@ -70,7 +70,8 @@ if ($Action -ne 'status') {
 Write-Step "kilo-latex-patch $Action"
 $npx = (Get-Command npx.cmd -ErrorAction SilentlyContinue).Source
 if (-not $npx) { Write-Bad 'Không tìm thấy npx.cmd (đi kèm Node.js).'; return }
-& $npx --yes kilo-latex-patch@latest $Action
+$pkg = 'https://github.com/QuangquyNguyenvo/kilo-latex-patch/releases/latest/download/kilo-latex-patch.tgz'
+& $npx --yes --package=$pkg kilo-latex-patch $Action
 $code = $LASTEXITCODE
 
 # 4. Reopen Kilo if we closed it.
