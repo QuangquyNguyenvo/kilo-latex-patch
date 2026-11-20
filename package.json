@@ -1,6 +1,6 @@
 {
   "name": "kilo-latex-patch",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Unofficial local patch that adds LaTeX math rendering (KaTeX) to the Kilo Desktop chat on Windows, until Kilo-Org/kilo-desktop#70 is fixed.",
   "type": "module",
   "bin": {

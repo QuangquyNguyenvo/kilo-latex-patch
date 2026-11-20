@@ -126,7 +126,9 @@ try {
     $npx = (Get-Command npx.cmd -ErrorAction SilentlyContinue).Source
     if (-not $npx) { Show-Result $false @('Không tìm thấy npx.cmd (đi kèm Node.js).'); return }
     Write-Host ''
-    & $npx --yes --loglevel=error --package="$pkg" kilo-latex-patch $Action
+    $extra = @()
+    if ($Action -ne 'status') { $extra += '--close-kilo' }
+    & $npx --yes --loglevel=error --package="$pkg" kilo-latex-patch $Action @extra
     $code = $LASTEXITCODE
 } finally {
     Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue

@@ -22,6 +22,7 @@ Cách dùng:
 Tuỳ chọn:
   --app-dir <path>   chọn một thư mục app-x.y.z cụ thể
   --root <path>      thư mục cài Kilo (mặc định: tự tìm)
+  --close-kilo       tự tắt Kilo (và các tiến trình con) trước khi vá/gỡ
 
 Thoát Kilo trước khi patch/restore. Chạy lại "patch" sau mỗi lần Kilo cập nhật.`;
 
@@ -46,10 +47,10 @@ try {
   const ver = versionOf(appDir);
 
   if (cmd === 'patch') {
-    const r = patch(appDir, { dryRun: args.includes('--dry-run'), ui });
+    const r = patch(appDir, { dryRun: args.includes('--dry-run'), closeKilo: args.includes('--close-kilo'), ui });
     if (r.changed) ui.ok(`\nĐã vá Kilo ${ver} (${secs()} giây).`);
   } else if (cmd === 'restore') {
-    const r = restore(appDir, { ui });
+    const r = restore(appDir, { closeKilo: args.includes('--close-kilo'), ui });
     if (r.changed) ui.ok(`\nĐã gỡ vá, Kilo ${ver} trở về bản gốc (${secs()} giây).`);
   } else if (cmd === 'status') {
     const s = status(appDir);
@@ -63,6 +64,10 @@ try {
     process.exit(2);
   }
 } catch (err) {
-  console.error(`\n${color.red(`Lỗi: ${err.message}`)}`);
+  const msg = ['EPERM', 'EBUSY', 'EACCES'].includes(err.code)
+    ? `Windows không cho ghi/đọc ${err.path ?? 'file của Kilo'} (file đang bị khoá). ` +
+      'Tắt hẳn Kilo, đợi vài giây rồi chạy lại. Nếu vẫn lỗi, tạm tắt quét virus thời gian thực rồi thử lại.'
+    : err.message;
+  console.error(`\n${color.red(`Lỗi: ${msg}`)}`);
   process.exit(1);
 }
