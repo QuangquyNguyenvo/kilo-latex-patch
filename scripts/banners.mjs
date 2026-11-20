@@ -27,7 +27,7 @@ const C = {
 };
 
 // ---------- content ----------
-const TITLE = 'kilo-latex-patch';
+const TITLE = 'Kilo LaTeX Patch';
 const SUB = 'LaTeX cho chat Kilo Desktop';
 const RAW = '$$\\sum_{k=1}^{n} k = \\frac{n(n+1)}{2}$$';
 const TEX = '\\sum_{k=1}^{n} k = \\frac{n(n+1)}{2}';
@@ -66,7 +66,7 @@ const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, 
 // ---------- header ----------
 async function header() {
   const W = 960;
-  const H = 340;
+  const H = 380;
   const monoText = RAW + TAG_RAW + TAG_OK + BADGE;
   const css = [
     await fontFace('Manrope', MANROPE, TITLE, 800),
@@ -75,28 +75,28 @@ async function header() {
   ].join('');
 
   const math = texToSvg(TEX);
-  const mathH = 74;
+  const mathH = 86;
   const mathW = (math.vb[2] / math.vb[3]) * mathH;
 
   // Two cards side by side: raw LaTeX typed out (before) -> rendered (after).
-  const cy = 150;
-  const ch = 150;
-  const cw = 380;
+  const cy = 170;
+  const ch = 170;
+  const cw = 400;
   const lx = 40;
   const rx = W - 40 - cw;
-  const fs = 14;
+  const fs = 15;
   const charW = fs * 0.6; // Source Code Pro advance width
   const rawW = RAW.length * charW;
   const rawX = lx + (cw - rawW) / 2;
-  const rawY = cy + ch / 2 + 22;
+  const rawY = cy + ch / 2 + 24;
   const T = 6; // loop length (s); typing 0-30%, result 38-46%, hold, reset 92%+
   const steps = RAW.length;
   const widths = Array.from({ length: steps + 1 }, (_, i) => (i * charW).toFixed(1)).join(';');
   const times = Array.from({ length: steps + 1 }, (_, i) => ((0.3 * i) / steps).toFixed(4)).join(';');
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="kilo-latex-patch: LaTeX cho chat Kilo Desktop">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Kilo LaTeX Patch: LaTeX cho chat Kilo Desktop">
 <style>${css}
-.t{font-family:Manrope,sans-serif;font-weight:800;fill:${C.text};letter-spacing:-1.5px}
+.t{font-family:Manrope,sans-serif;font-weight:800;fill:${C.text};letter-spacing:-1px}
 .m{font-family:Mono,MonoVi,ui-monospace,monospace;font-weight:500}
 .px rect{animation:px 1.4s infinite}
 .px rect:nth-child(2){animation-delay:.15s}.px rect:nth-child(3){animation-delay:.3s}.px rect:nth-child(4){animation-delay:.45s}
@@ -113,19 +113,19 @@ async function header() {
 <animate attributeName="width" dur="${T}s" repeatCount="indefinite" calcMode="discrete" values="${widths};${rawW.toFixed(1)}" keyTimes="${times};1"/>
 </rect></clipPath></defs>
 <rect width="${W}" height="${H}" rx="16" fill="${C.bg}"/>
-<g class="px" transform="translate(40 52)">
-  <rect x="0" y="0" width="14" height="14" fill="${C.yellow}"/>
-  <rect x="18" y="0" width="14" height="14" fill="${C.yellow}"/>
-  <rect x="0" y="18" width="14" height="14" fill="${C.yellow}"/>
-  <rect x="18" y="18" width="14" height="14" fill="${C.yellow}"/>
+<g class="px" transform="translate(40 50)">
+  <rect x="0" y="0" width="18" height="18" fill="${C.yellow}"/>
+  <rect x="22" y="0" width="18" height="18" fill="${C.yellow}"/>
+  <rect x="0" y="22" width="18" height="18" fill="${C.yellow}"/>
+  <rect x="22" y="22" width="18" height="18" fill="${C.yellow}"/>
 </g>
-<text x="90" y="80" class="t" font-size="44">${esc(TITLE)}</text>
-<text x="92" y="112" class="m" font-size="17" fill="${C.muted}">${esc(SUB)}</text>
-<rect x="${W - 196}" y="52" width="156" height="32" rx="16" fill="${C.yellow}"/>
-<text x="${W - 118}" y="73" class="m" font-size="14" fill="${C.ink}" text-anchor="middle">${esc(BADGE)}</text>
+<text x="100" y="88" class="t" font-size="58">${esc(TITLE)}</text>
+<text x="102" y="128" class="m" font-size="21" fill="${C.muted}">${esc(SUB)}</text>
+<rect x="${W - 220}" y="52" width="180" height="40" rx="20" fill="${C.yellow}"/>
+<text x="${W - 130}" y="78" class="m" font-size="17" fill="${C.ink}" text-anchor="middle">${esc(BADGE)}</text>
 
 <rect x="${lx}" y="${cy}" width="${cw}" height="${ch}" rx="12" fill="${C.panel}" stroke="${C.line}" stroke-width="1.5"/>
-<text x="${lx + 20}" y="${cy + 30}" class="m" font-size="13" fill="${C.muted}">${esc(TAG_RAW)}</text>
+<text x="${lx + 20}" y="${cy + 34}" class="m" font-size="17" fill="${C.muted}">${esc(TAG_RAW)}</text>
 <g clip-path="url(#type)"><text x="${rawX}" y="${rawY}" class="m" font-size="${fs}" fill="${C.text}">${esc(RAW)}</text></g>
 
 <g class="arrow" transform="translate(${W / 2 - 22} ${cy + ch / 2 - 11})">
@@ -134,9 +134,9 @@ async function header() {
 </g>
 
 <rect class="okCard" x="${rx}" y="${cy}" width="${cw}" height="${ch}" rx="12" fill="${C.panel}" stroke="${C.line}" stroke-width="1.5"/>
-<text x="${rx + 20}" y="${cy + 30}" class="m" font-size="13" fill="${C.yellow}">${esc(TAG_OK)}</text>
+<text x="${rx + 20}" y="${cy + 34}" class="m" font-size="17" fill="${C.yellow}">${esc(TAG_OK)}</text>
 <g class="ok">
-<svg x="${rx + (cw - mathW) / 2}" y="${cy + 50}" width="${mathW}" height="${mathH}" viewBox="${math.vb.join(' ')}" color="${C.text}" style="color:${C.text}">${math.inner}</svg>
+<svg x="${rx + (cw - mathW) / 2}" y="${cy + 56}" width="${mathW}" height="${mathH}" viewBox="${math.vb.join(' ')}" color="${C.text}" style="color:${C.text}">${math.inner}</svg>
 </g>
 </svg>
 `;
@@ -145,11 +145,11 @@ async function header() {
 // ---------- footer ----------
 async function footer() {
   const W = 960;
-  const H = 64;
+  const H = 76;
   const css = await fontFace('Mono', MONO, FOOT, 500);
   const n = 12;
   const blocks = Array.from({ length: n }, (_, i) =>
-    `<rect x="${40 + i * 14}" y="27" width="10" height="10" fill="${C.yellow}" style="animation-delay:${(i * 0.12).toFixed(2)}s"/>`,
+    `<rect x="${40 + i * 19}" y="31" width="14" height="14" fill="${C.yellow}" style="animation-delay:${(i * 0.12).toFixed(2)}s"/>`,
   ).join('');
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(FOOT)}">
 <style>${css}
@@ -160,13 +160,28 @@ async function footer() {
 </style>
 <rect width="${W}" height="${H}" rx="14" fill="${C.bg}"/>
 <g class="b">${blocks}</g>
-<text x="${W - 40}" y="37" class="m" font-size="14" fill="${C.muted}" text-anchor="end">${FOOT.replace(/·/g, '<tspan fill="#ffdd00">·</tspan>')}</text>
+<text x="${W - 40}" y="44" class="m" font-size="18" fill="${C.muted}" text-anchor="end">${FOOT.replace(/·/g, '<tspan fill="#ffdd00">·</tspan>')}</text>
+</svg>
+`;
+}
+
+function divider() {
+  const W = 960;
+  const H = 28;
+  const mid = W / 2;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="presentation">
+<style>.d rect{animation:d 1.8s infinite}.d rect:nth-child(2){animation-delay:.2s}.d rect:nth-child(3){animation-delay:.4s}
+@keyframes d{0%,100%{opacity:.3}40%{opacity:1}}@media (prefers-reduced-motion:reduce){.d rect{animation:none}}</style>
+<rect x="0" y="${H / 2 - 1}" width="${mid - 40}" height="2" fill="#8a8a8a" opacity=".35"/>
+<rect x="${mid + 40}" y="${H / 2 - 1}" width="${mid - 40}" height="2" fill="#8a8a8a" opacity=".35"/>
+<g class="d"><rect x="${mid - 26}" y="${H / 2 - 6}" width="12" height="12" fill="${C.yellow}"/><rect x="${mid - 6}" y="${H / 2 - 6}" width="12" height="12" fill="${C.yellow}"/><rect x="${mid + 14}" y="${H / 2 - 6}" width="12" height="12" fill="${C.yellow}"/></g>
 </svg>
 `;
 }
 
 fs.writeFileSync(path.join(out, 'header.svg'), await header());
+fs.writeFileSync(path.join(out, 'divider.svg'), divider());
 fs.writeFileSync(path.join(out, 'footer.svg'), await footer());
-for (const f of ['header.svg', 'footer.svg']) {
+for (const f of ['header.svg', 'divider.svg', 'footer.svg']) {
   console.log(f, (fs.statSync(path.join(out, f)).size / 1024).toFixed(1), 'KB');
 }

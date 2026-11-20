@@ -70,9 +70,19 @@ if ($Action -ne 'status') {
 Write-Step "kilo-latex-patch $Action"
 $npx = (Get-Command npx.cmd -ErrorAction SilentlyContinue).Source
 if (-not $npx) { Write-Bad 'Không tìm thấy npx.cmd (đi kèm Node.js).'; return }
-$pkg = 'https://github.com/QuangquyNguyenvo/kilo-latex-patch/releases/latest/download/kilo-latex-patch.tgz'
-& $npx --yes --package=$pkg kilo-latex-patch $Action
-$code = $LASTEXITCODE
+# npm 12 refuses remote tarball URLs by default, so download the release first.
+$url = 'https://github.com/QuangquyNguyenvo/kilo-latex-patch/releases/latest/download/kilo-latex-patch.tgz'
+$tmp = Join-Path ([IO.Path]::GetTempPath()) ("kilo-latex-patch-" + [guid]::NewGuid().ToString('N'))
+New-Item -ItemType Directory -Path $tmp | Out-Null
+$pkg = Join-Path $tmp 'kilo-latex-patch.tgz'
+try {
+    $ProgressPreference = 'SilentlyContinue'
+    Invoke-WebRequest -Uri $url -OutFile $pkg -UseBasicParsing
+    & $npx --yes --package="$pkg" kilo-latex-patch $Action
+    $code = $LASTEXITCODE
+} finally {
+    Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue
+}
 
 # 4. Reopen Kilo if we closed it.
 $launcher = Join-Path $env:LOCALAPPDATA 'KiloDesktop\kilo-desktop.exe'

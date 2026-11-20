@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="28" viewBox="0 0 960 28" role="presentation">
+<style>.d rect{animation:d 1.8s infinite}.d rect:nth-child(2){animation-delay:.2s}.d rect:nth-child(3){animation-delay:.4s}
+@keyframes d{0%,100%{opacity:.3}40%{opacity:1}}@media (prefers-reduced-motion:reduce){.d rect{animation:none}}</style>
+<rect x="0" y="13" width="440" height="2" fill="#8a8a8a" opacity=".35"/>
+<rect x="520" y="13" width="440" height="2" fill="#8a8a8a" opacity=".35"/>
+<g class="d"><rect x="454" y="8" width="12" height="12" fill="#ffdd00"/><rect x="474" y="8" width="12" height="12" fill="#ffdd00"/><rect x="494" y="8" width="12" height="12" fill="#ffdd00"/></g>
+</svg>
